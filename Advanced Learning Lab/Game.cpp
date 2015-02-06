@@ -1,12 +1,15 @@
 #include "Game.h"
 #include <iostream>
 #include <string>
-#include "Errors.h"
+#include <Game Engine/Errors.h>
+#include <Game Engine/GameEngine.h>
+#include <Game Engine/ResourceManager.h>
+
 //#include "ImageLoader.h"
 
-Game::Game() : _screenWidth(1024), _screenHeight(760), _time(0), p_window(nullptr), _gameState(GameState::PLAY), _maxFps(60.0f)
+Game::Game() : _screenWidth(1024), _screenHeight(760), _time(0), _gameState(GameState::PLAY), _maxFps(60.0f)
 {
-
+	_camera.Init(_screenWidth, _screenHeight);
 }
 
 
@@ -17,10 +20,10 @@ Game::~Game()
 void Game::Run()
 {
 	Init();
-	_sprites.push_back(new Sprite());
-	_sprites.back()->Init(-1.0f, -1.0f, 1.0f, 1.0f, "Textures/JimmyJumpPack/PNG/CharacterRight_Standing.png");
-	_sprites.push_back(new Sprite());
-	_sprites.back()->Init(0.0f, -1.0f, 1.0f, 1.0f, "Textures/JimmyJumpPack/PNG/CharacterRight_Standing.png");
+	/*_sprites.push_back(new GameEngine::Sprite());
+	_sprites.back()->Init(0.0f, 0.0f, _screenWidth / 2, _screenHeight / 2, "Textures/JimmyJumpPack/PNG/CharacterRight_Standing.png");
+	_sprites.push_back(new GameEngine::Sprite());
+	_sprites.back()->Init(0.0f, 0.0f, _screenWidth / 2, _screenHeight / 2, "Textures/JimmyJumpPack/PNG/CharacterRight_Standing.png");*/
 	//_sprite.Init(-1.0f, -1.0f, 1.0f, 1.0f, "Textures/JimmyJumpPack/PNG/CharacterRight_Standing.png");
 	//_playerTexture = ImageLoader::LoadPNG("Textures/JimmyJumpPack/PNG/CharacterRight_Standing.png");
 	Update();
@@ -28,35 +31,11 @@ void Game::Run()
 
 void Game::Init()
 {
-	SDL_Init(SDL_INIT_EVERYTHING);
-
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-	p_window = SDL_CreateWindow("Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _screenWidth, _screenHeight, SDL_WINDOW_OPENGL);
-	if (p_window == nullptr)
-	{
-		FatalError("SDL Window could not be created.");
-	}
-
-	SDL_GLContext glContext = SDL_GL_CreateContext(p_window);
-	if (glContext == nullptr)
-	{
-		FatalError("SDL_GL context could not be created.");
-	}
-
-	GLenum glError = glewInit();
-	if (glError != GLEW_OK)
-	{
-		FatalError("Glew failed to initialize.");
-	}
-
-	printf("*** OpenGL Version: %s ***", glGetString(GL_VERSION));
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
-	// vsync
-	SDL_GL_SetSwapInterval(1);
+	GameEngine::Init();
+	_window.Create("Game Engine", _screenWidth, _screenHeight, 0);
 
 	InitShaders();
+	_spriteBatch.Init();
 }
 
 void Game::InitShaders()
@@ -76,6 +55,8 @@ void Game::Update()
 		float startTicks = SDL_GetTicks();
 		Input();
 		_time += 0.01f;
+
+		_camera.Update();
 		Draw();
 		CalculateFPS();
 		// print only once every 10 frames
@@ -99,6 +80,9 @@ void Game::Update()
 void Game::Input()
 {
 	SDL_Event sdlEvent;
+
+	const float CAMERA_SPEED = 20.0f;
+	const float SCALE_SPEED = 0.1f;
 	while (SDL_PollEvent(&sdlEvent))
 	{
 		switch (sdlEvent.type)
@@ -108,6 +92,29 @@ void Game::Input()
 				break;
 			case SDL_MOUSEMOTION:
 				//std::cout << sdlEvent.motion.x << " " << sdlEvent.motion.y << std::endl;
+				break;
+			case SDL_KEYDOWN:
+				switch (sdlEvent.key.keysym.sym)
+				{
+					case SDLK_w:
+						_camera.SetPosition(_camera.GetPosition() + glm::vec2(0.0f, CAMERA_SPEED));
+						break;
+					case SDLK_s:
+						_camera.SetPosition(_camera.GetPosition() + glm::vec2(0.0f, -CAMERA_SPEED));
+						break;
+					case SDLK_d:
+						_camera.SetPosition(_camera.GetPosition() + glm::vec2(CAMERA_SPEED, 0.0f));
+						break;
+					case SDLK_a:
+						_camera.SetPosition(_camera.GetPosition() + glm::vec2(-CAMERA_SPEED, 0.0f));
+						break;
+					case SDLK_q:
+						_camera.SetScale(_camera.GetScale() + SCALE_SPEED);
+						break;
+					case SDLK_e:
+						_camera.SetScale(_camera.GetScale() - SCALE_SPEED);
+						break;
+				}
 				break;
 		}
 	}
@@ -125,13 +132,37 @@ void Game::Draw()
 	GLint timeLocation = _colorProgram.GetUniformLocation("time");
 	glUniform1f(timeLocation, _time);
 	//_sprite.Draw();
-	for (int i = 0; i < _sprites.size(); i++)
+
+	GLint pLocation = _colorProgram.GetUniformLocation("P");
+	glm::mat4 cameraMatrix = _camera.GetCameraMatrix();
+
+	glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
+
+	_spriteBatch.Begin();
+	glm::vec4 pos(0.0f, 0.0f, 50.0f, 50.0f);
+	glm::vec4 uv(0.0f, 0.0f, 1.0f, 1.0f);
+	static GameEngine::GLTexture texture = GameEngine::ResourceManager::GetTexture("Textures/JimmyJumpPack/PNG/CharacterRight_Standing.png");
+	GameEngine::Color color;
+	color.r = 255;
+	color.g = 255;
+	color.b = 255;
+	color.a = 255;
+	for (int i = 0; i < 1000; i++)
+	{
+		_spriteBatch.Draw(pos, uv, texture.id, 0.0f, color);
+		_spriteBatch.Draw(pos + glm::vec4(50.0f, 0.0f, 0.0f, 0.0f), uv, texture.id, 0.0f, color);
+	}
+	_spriteBatch.End();
+	_spriteBatch.RenderBatches();
+
+
+	/*for (int i = 0; i < _sprites.size(); i++)
 	{
 		_sprites[i]->Draw();
-	}
+	}*/
 	glBindTexture(GL_TEXTURE_2D, 0);
 	_colorProgram.Unuse();
-	SDL_GL_SwapWindow(p_window);
+	_window.Swap();
 }
 
 void Game::CalculateFPS()

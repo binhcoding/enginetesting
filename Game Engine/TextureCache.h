@@ -2,14 +2,15 @@
 #include <map>
 #include <string>
 #include "GLTexture.h"
-
-class TextureCache
+namespace GameEngine
 {
-	public:
+	class TextureCache
+	{
+		public:
 		TextureCache();
 		~TextureCache();
 		GLTexture GetTexture(std::string& filePath);
-	private:
+		private:
 		std::map<std::string, GLTexture> _textureMap;
-};
-
+	};
+}

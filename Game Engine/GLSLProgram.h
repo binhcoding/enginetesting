@@ -2,9 +2,12 @@
 #include <string>
 #include <GL/glew.h>
 //GLSL - Open GL Shading Language
-class GLSLProgram
+
+namespace GameEngine
 {
-	public:
+	class GLSLProgram
+	{
+		public:
 		GLSLProgram();
 		~GLSLProgram();
 		void CompileShaders(const std::string& vertexShaderFilePath, const std::string& fragmentShaderFilePath);
@@ -13,7 +16,7 @@ class GLSLProgram
 		void Use();
 		void Unuse();
 		GLint GetUniformLocation(const std::string& uniformName);
-	private:
+		private:
 		void CompileShader(const std::string& filePath, GLuint id);
 
 		int _numAttributes;
@@ -21,5 +24,6 @@ class GLSLProgram
 		GLuint _vertexShaderId;
 		GLuint _fragmentShaderId;
 
-};
+	};
 
+}

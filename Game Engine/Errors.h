@@ -1,3 +1,7 @@
 #pragma once
 #include <string>
-extern void FatalError(std::string errorString);
+
+namespace GameEngine
+{
+	extern void FatalError(std::string errorString);
+}
