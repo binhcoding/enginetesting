@@ -8,7 +8,9 @@
 #include <vector>
 #include <Game Engine/Camera2D.h>
 #include <Game Engine/SpriteBatch.h>
-
+#include <Game Engine/InputManager.h>
+#include <Game Engine/Timing.h>
+#include "Bullet.h"
 enum class GameState { PLAY, EXIT };
 
 
@@ -24,7 +26,6 @@ class Game
 		void Update();
 		void Input();
 		void Draw();
-		void CalculateFPS();
 
 		GameEngine::Window _window;
 		int _screenWidth;
@@ -35,10 +36,14 @@ class Game
 		//std::vector<GameEngine::Sprite*> _sprites;
 		GameEngine::GLSLProgram _colorProgram;
 		GameEngine::SpriteBatch _spriteBatch;
+
+		std::vector<Bullet> _bullets;
+
 		float _time;
-		float _fps;
-		float _frameTime;
 		float _maxFps;
+		float _fps;
 		GameEngine::Camera2D _camera;
+		GameEngine::InputManager _inputManager;
+		GameEngine::FpsLimiter _fpsLimiter;
 };
 

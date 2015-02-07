@@ -23,6 +23,9 @@ namespace GameEngine
 			_scale = newScale;
 			_needsMatrixUpdate = true;
 		}
+
+		glm::vec2 ConvertScreenToWorld(glm::vec2 screenCoords);
+
 		// getters
 		glm::vec2 GetPosition() { return _position; }
 		float GetScale() { return _scale; }

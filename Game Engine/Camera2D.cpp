@@ -36,4 +36,19 @@ namespace GameEngine
 
 		}
 	}
+
+	glm::vec2 Camera2D::ConvertScreenToWorld(glm::vec2 screenCoords)
+	{
+		// invert y direction
+		screenCoords.y = _screenHeight - screenCoords.y;
+
+		// convert from 0,0 top left and sh/sw bottom right to
+		// forces 0,0 to the center
+		screenCoords -= glm::vec2(_screenWidth / 2, _screenHeight / 2);
+		// scale the coordinates
+		screenCoords /= _scale;
+		// translate with the camera position
+		screenCoords += _position;
+		return screenCoords;
+	}
 }

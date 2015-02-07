@@ -36,6 +36,7 @@ void Game::Init()
 
 	InitShaders();
 	_spriteBatch.Init();
+	_fpsLimiter.Init(_maxFps);
 }
 
 void Game::InitShaders()
@@ -52,27 +53,33 @@ void Game::Update()
 	while (_gameState != GameState::EXIT)
 	{
 		// used for frame time measuring
-		float startTicks = SDL_GetTicks();
+		_fpsLimiter.Begin();
 		Input();
 		_time += 0.01f;
 
 		_camera.Update();
-		Draw();
-		CalculateFPS();
+		for (int i = 0; i < _bullets.size();)
+		{
+			if (_bullets[i].Update())
+			{
+				_bullets[i] = _bullets.back();
+				_bullets.pop_back();
+			}
+			else
+			{
+				i++;
+			}
+		}
+		Draw();		
+		_fps = _fpsLimiter.End();
+
 		// print only once every 10 frames
 		static int frameCounter = 0;
 		frameCounter++;
-		if (frameCounter == 10)
+		if (frameCounter == 10000)
 		{
 			std::cout << _fps << std::endl;
 			frameCounter = 0;
-		}
-
-		float frameTicks = SDL_GetTicks() - startTicks;
-		// limit the fps to the max fps
-		if (1000.0f / _maxFps > frameTicks)
-		{
-			SDL_Delay(1000.0f / _maxFps - frameTicks);
 		}
 	}
 }
@@ -81,7 +88,7 @@ void Game::Input()
 {
 	SDL_Event sdlEvent;
 
-	const float CAMERA_SPEED = 20.0f;
+	const float CAMERA_SPEED = 10.0f;
 	const float SCALE_SPEED = 0.1f;
 	while (SDL_PollEvent(&sdlEvent))
 	{
@@ -92,31 +99,62 @@ void Game::Input()
 				break;
 			case SDL_MOUSEMOTION:
 				//std::cout << sdlEvent.motion.x << " " << sdlEvent.motion.y << std::endl;
+				_inputManager.SetMouseCoordinates(sdlEvent.motion.x, sdlEvent.motion.y);
 				break;
 			case SDL_KEYDOWN:
-				switch (sdlEvent.key.keysym.sym)
-				{
-					case SDLK_w:
-						_camera.SetPosition(_camera.GetPosition() + glm::vec2(0.0f, CAMERA_SPEED));
-						break;
-					case SDLK_s:
-						_camera.SetPosition(_camera.GetPosition() + glm::vec2(0.0f, -CAMERA_SPEED));
-						break;
-					case SDLK_d:
-						_camera.SetPosition(_camera.GetPosition() + glm::vec2(CAMERA_SPEED, 0.0f));
-						break;
-					case SDLK_a:
-						_camera.SetPosition(_camera.GetPosition() + glm::vec2(-CAMERA_SPEED, 0.0f));
-						break;
-					case SDLK_q:
-						_camera.SetScale(_camera.GetScale() + SCALE_SPEED);
-						break;
-					case SDLK_e:
-						_camera.SetScale(_camera.GetScale() - SCALE_SPEED);
-						break;
-				}
+				_inputManager.KeyPress(sdlEvent.key.keysym.sym);
+				break;
+			case SDL_KEYUP:
+				_inputManager.KeyRelease(sdlEvent.key.keysym.sym);
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				_inputManager.KeyPress(sdlEvent.button.button);
+				break;
+			case SDL_MOUSEBUTTONUP:
+				_inputManager.KeyRelease(sdlEvent.button.button);
 				break;
 		}
+	}
+
+	if (_inputManager.IsKeyPressed(SDLK_w))
+	{
+		_camera.SetPosition(_camera.GetPosition() + glm::vec2(0.0f, CAMERA_SPEED));
+	}
+
+	if (_inputManager.IsKeyPressed(SDLK_s))
+	{
+		_camera.SetPosition(_camera.GetPosition() + glm::vec2(0.0f, -CAMERA_SPEED));
+	}
+
+	if (_inputManager.IsKeyPressed(SDLK_d))
+	{
+		_camera.SetPosition(_camera.GetPosition() + glm::vec2(CAMERA_SPEED, 0.0f));
+	}
+
+	if (_inputManager.IsKeyPressed(SDLK_a))
+	{
+		_camera.SetPosition(_camera.GetPosition() + glm::vec2(-CAMERA_SPEED, 0.0f));
+	}
+
+	if (_inputManager.IsKeyPressed(SDLK_q))
+	{
+		_camera.SetScale(_camera.GetScale() + SCALE_SPEED);
+	}
+
+	if (_inputManager.IsKeyPressed(SDLK_e))
+	{
+		_camera.SetScale(_camera.GetScale() - SCALE_SPEED);
+	}
+
+	if (_inputManager.IsKeyPressed(SDL_BUTTON_LEFT))
+	{
+		glm::vec2 mouseCoords = _inputManager.GetMouseCoordinates();
+		mouseCoords = _camera.ConvertScreenToWorld(mouseCoords);
+		//std::cout << mouseCoords.x << " " << mouseCoords.y << std::endl;
+		glm::vec2 playerPosition(0.0f);
+		glm::vec2 direction = mouseCoords - playerPosition;
+		direction = glm::normalize(direction);
+		_bullets.emplace_back(playerPosition, direction, 1.00f, 1000);
 	}
 }
 
@@ -129,8 +167,8 @@ void Game::Draw()
 	glActiveTexture(GL_TEXTURE0);
 	GLint textureLocation = _colorProgram.GetUniformLocation("mySampler");
 	glUniform1i(textureLocation, 0);
-	GLint timeLocation = _colorProgram.GetUniformLocation("time");
-	glUniform1f(timeLocation, _time);
+	/*GLint timeLocation = _colorProgram.GetUniformLocation("time");
+	glUniform1f(timeLocation, _time);*/
 	//_sprite.Draw();
 
 	GLint pLocation = _colorProgram.GetUniformLocation("P");
@@ -147,48 +185,15 @@ void Game::Draw()
 	color.g = 255;
 	color.b = 255;
 	color.a = 255;
-	for (int i = 0; i < 1000; i++)
+	_spriteBatch.Draw(pos, uv, texture.id, 0.0f, color);
+	for (int i = 0; i < _bullets.size(); i++)
 	{
-		_spriteBatch.Draw(pos, uv, texture.id, 0.0f, color);
-		_spriteBatch.Draw(pos + glm::vec4(50.0f, 0.0f, 0.0f, 0.0f), uv, texture.id, 0.0f, color);
+		_bullets[i].Draw(_spriteBatch);
 	}
+
 	_spriteBatch.End();
 	_spriteBatch.RenderBatches();
-
-
-	/*for (int i = 0; i < _sprites.size(); i++)
-	{
-		_sprites[i]->Draw();
-	}*/
 	glBindTexture(GL_TEXTURE_2D, 0);
 	_colorProgram.Unuse();
 	_window.Swap();
-}
-
-void Game::CalculateFPS()
-{
-	static const int NUM_SAMPLES = 10;
-	static float frameTimes[NUM_SAMPLES];
-	static int currentFrame = 0;
-
-	static float prevTicks = SDL_GetTicks();
-	float currentTicks;
-	currentTicks = SDL_GetTicks();
-
-	_frameTime = currentTicks - prevTicks;
-	prevTicks = currentTicks;
-	// frameTimes is circular
-	frameTimes[currentFrame % NUM_SAMPLES] = _frameTime;
-
-	int count;
-	currentFrame++;
-	count = (currentFrame < NUM_SAMPLES) ? currentFrame : NUM_SAMPLES;
-
-	float frameTimeAverage = 0;
-	for (int i = 0; i < count; i++)
-	{
-		frameTimeAverage += frameTimes[i];
-	}
-	frameTimeAverage /= count;
-	_fps = (frameTimeAverage > 0) ? 1000.0f / frameTimeAverage : 60.0f;
 }
