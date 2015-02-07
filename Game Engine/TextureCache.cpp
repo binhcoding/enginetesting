@@ -28,10 +28,10 @@ namespace GameEngine
 			/*std::pair<std::string, GLTexture> newPair(filePath, newTexture);
 			_textureMap.insert(newPair);*/
 			_textureMap.insert(make_pair(filePath, newTexture));
-			std::cout << "Adding to cache." << std::endl;
+			//std::cout << "Adding to cache." << std::endl;
 			return newTexture;
 		}
-		std::cout << "Pulled from cache." << std::endl;
+		//std::cout << "Pulled from cache." << std::endl;
 		return mapIterator->second;
 	}
 }

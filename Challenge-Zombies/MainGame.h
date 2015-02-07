@@ -4,6 +4,9 @@
 #include <Game Engine/GLSLProgram.h>
 #include <Game Engine/Camera2D.h>
 #include <Game Engine/InputManager.h>
+#include <Game Engine/SpriteBatch.h>
+#include <Game Engine/Timing.h>
+#include "Level.h"
 
 class MainGame
 {
@@ -38,5 +41,15 @@ private:
 	GameEngine::InputManager _inputManager; ///< Handles input
 
 	GameEngine::Camera2D _camera; ///< Main Camera
+
+	GameEngine::SpriteBatch _spriteBatch;
+
+	GameEngine::FpsLimiter _fpsLimiter;
+
+	Level _level;
+	int _screenWidth;
+	int _screenHeight;
+	float _maxFps;
+	float _fps;
 };
 

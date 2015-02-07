@@ -15,6 +15,14 @@ namespace GameEngine
 		GLubyte g;
 		GLubyte b;
 		GLubyte a;
+
+		void SetColor(GLubyte R, GLubyte G, GLubyte B, GLubyte A)
+		{
+			r = R;
+			g = G;
+			b = B;
+			a = A;
+		}
 	};
 
 	struct UV
