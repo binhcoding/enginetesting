@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Bengine/Window.h>
-#include <Bengine/GLSLProgram.h>
-#include <Bengine/Camera2D.h>
-#include <Bengine/InputManager.h>
+#include <Game Engine/Window.h>
+#include <Game Engine/GLSLProgram.h>
+#include <Game Engine/Camera2D.h>
+#include <Game Engine/InputManager.h>
 
 class MainGame
 {
@@ -31,12 +31,12 @@ private:
     void drawGame();
 
     /// Member Variables
-    Bengine::Window _window; ///< The game window
+	GameEngine::Window _window; ///< The game window
     
-    Bengine::GLSLProgram _textureProgram; ///< The shader program
+	GameEngine::GLSLProgram _textureProgram; ///< The shader program
 
-    Bengine::InputManager _inputManager; ///< Handles input
+	GameEngine::InputManager _inputManager; ///< Handles input
 
-    Bengine::Camera2D _camera; ///< Main Camera
+	GameEngine::Camera2D _camera; ///< Main Camera
 };
 

@@ -11,6 +11,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game Engine", "Game Engine\Game Engine.vcxproj", "{F289F907-1EDD-4FEE-9B2C-EE7536A30BE7}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Challenge-Zombies", "Challenge-Zombies\Challenge-Zombies.vcxproj", "{D82D0F42-CAD2-49DE-BEC2-2B80739710CD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F289F907-1EDD-4FEE-9B2C-EE7536A30BE7} = {F289F907-1EDD-4FEE-9B2C-EE7536A30BE7}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
