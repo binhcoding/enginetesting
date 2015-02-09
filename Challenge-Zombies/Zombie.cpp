@@ -1,5 +1,6 @@
 #include "Zombie.h"
 #include <glm/glm.hpp>
+#include "Human.h"
 
 Zombie::Zombie()
 {
@@ -10,27 +11,48 @@ Zombie::~Zombie()
 {
 }
 
-void Zombie::Chase(Human& target)
+void Zombie::Init(float speed, glm::vec2 position)
 {
-	_target = &target;
+	_health = 150;
+	_speed = speed;
+	_position = position;
+	_color.r = 0;
+	_color.g = 160;
+	_color.b = 0;
+	_color.a = 255;
 }
 
-void Zombie::Update()
+void Zombie::Update(const std::vector<std::string>& levelData,
+	std::vector<Human*>& humans,
+	std::vector<Zombie*>& zombies)
 {
-	if (_target == nullptr)
-		return;
-	// what if the target manages to get away from you
-	glm::vec2 myPosition(TileOccupied->positionAndSize.x, TileOccupied->positionAndSize.y);
-	glm::vec2 targetPosition(_target->TileOccupied->positionAndSize.x, _target->TileOccupied->positionAndSize.y);
-	if (glm::distance(myPosition, targetPosition) > _leashRange)
+	Human* closestHuman = GetNearestHuman(humans);
+
+	if (closestHuman != nullptr)
 	{
-		_target == nullptr;
-		return;
+		glm::vec2 direction = glm::normalize(closestHuman->GetPosition() - _position);
+		_position += direction * _speed;
 	}
-	glm::vec2 direction = myPosition - targetPosition;
-	direction = glm::normalize(direction);
-	myPosition += direction * _speed;
-	// TODO: convert direction into a cardinal direction to check if its legal to move in that direction
-	TileOccupied->positionAndSize.x = myPosition.x;
-	TileOccupied->positionAndSize.y = myPosition.y;
+
+	CollideWithLevel(levelData);
+}
+
+Human* Zombie::GetNearestHuman(std::vector<Human*>& humans)
+{
+	Human* closestHuman = nullptr;
+	float smallestDistance = 999999.0f;
+	for (int i = 0; i < humans.size(); i++)
+	{
+		glm::vec2 distVect = humans[i]->GetPosition() - _position;
+		float distance = glm::length(distVect);
+		
+		if (distance < smallestDistance)
+		{
+			smallestDistance = distance;
+			closestHuman = humans[i];
+		}
+	}
+
+
+	return closestHuman;
 }

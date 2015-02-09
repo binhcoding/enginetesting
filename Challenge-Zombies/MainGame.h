@@ -7,6 +7,11 @@
 #include <Game Engine/SpriteBatch.h>
 #include <Game Engine/Timing.h>
 #include "Level.h"
+#include <vector>
+#include "Player.h"
+#include "Bullet.h"
+
+class Zombie;
 
 class MainGame
 {
@@ -15,23 +20,32 @@ public:
     ~MainGame();
 
     /// Runs the game
-    void run();
+    void Run();
 
 private:
     /// Initializes the core systems
-    void initSystems();
+    void InitSystems();
 
     /// Initializes the shaders
-    void initShaders();
+    void InitShaders();
 
     /// Main game loop for the program
-    void gameLoop();
+    void GameLoop();
 
     /// Handles input processing
-    void processInput();
+    void ProcessInput();
 
     /// Renders the game
-    void drawGame();
+    void DrawGame();
+
+	// update all the agents
+	void UpdateAgents();
+
+	//update all the bullets
+	void UpdateBullets();
+
+	// check victory conditions
+	void CheckVictory();
 
     /// Member Variables
 	GameEngine::Window _window; ///< The game window
@@ -46,7 +60,19 @@ private:
 
 	GameEngine::FpsLimiter _fpsLimiter;
 
-	Level _level;
+	std::vector<Human*> _humans; // vector of all humans
+
+	std::vector<Zombie*> _zombies;
+
+	std::vector<Bullet> _bullets;
+
+	int _numHumansKilled; // humans killed by player
+	int _numZombiesKilled; // zombies killed by player
+	
+	
+	Player* _player;
+
+	Level* _level;
 	int _screenWidth;
 	int _screenHeight;
 	float _maxFps;

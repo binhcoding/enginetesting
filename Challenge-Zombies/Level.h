@@ -2,25 +2,27 @@
 #include <string>
 #include <vector>
 #include <Game Engine/SpriteBatch.h>
-#include "Tile.h"
+
+const int TILE_WIDTH = 64;
 
 class Level
 {
 	public:
-		Level();
+		Level(const std::string& levelPath);
 		~Level();
-		void LoadLevel(const std::string& levelPath);
-		void Draw(GameEngine::SpriteBatch& spriteBatch);
+		void Draw();
+
+		int GetWidth() const { return _levelData[0].size(); }
+		int GetHeight() const { return _levelData.size(); }
+		int GetNumHumans() const { return _humanCount; }
+		const std::vector<std::string>& GetLevelData() const { return _levelData; }
+		glm::vec2 GetPlayerStartPosition() const { return _playerStartPosition; }
+		const std::vector<glm::vec2>& GetZombieStartPositions() const { return _zombieStartPositions; }
 	private:
-		Tile* GetNorth(int x, int y);
-		Tile* GetWest(int x, int y);
-		Tile* GetEast(int x, int y);
-		Tile* GetSouth(int x, int y);
-		bool ErrorCheck(int x, int y);
 		std::vector<std::string> _levelData;
 		int _humanCount;
-		static const int _rows = 32;
-		static const int _columns = 112;
-		Tile* _tileMap[_rows][_columns];
+		GameEngine::SpriteBatch _spriteBatch;
+		glm::vec2 _playerStartPosition;
+		std::vector<glm::vec2> _zombieStartPositions;
 };
 

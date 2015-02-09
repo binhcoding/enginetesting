@@ -4,10 +4,13 @@ class Human : public Agent
 {
 	public:
 	Human();
-	~Human();
-	void Update();
-	void SetChase(bool beingChased);
+	virtual ~Human();
+	void Init(float speed, glm::vec2 position);
+	virtual void Update(const std::vector<std::string>& levelData,
+		std::vector<Human*>& humans,
+		std::vector<Zombie*>& zombies);
 	private:
-	bool _beingChased;
+	glm::vec2 _direction;
+	int _frames;
 };
 
