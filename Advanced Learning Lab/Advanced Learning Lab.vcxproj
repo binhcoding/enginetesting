@@ -39,8 +39,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)/Dependencies/include;$(SolutionDir);$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)/Dependencies/lib;$(SolutionDir)Debug/;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)/Dependencies/include;$(SolutionDir);$(AWE_DIR)include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)/Dependencies/lib;$(SolutionDir)Debug/;$(AWE_DIR)build\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -50,7 +50,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;opengl32.lib;glew32.lib;Game Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;opengl32.lib;glew32.lib;Game Engine.lib;awesomium.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
     </Link>
     <PostBuildEvent>
@@ -76,10 +76,15 @@
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="UiCore.cpp" />
+    <ClCompile Include="UiSurface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="UiCore.h" />
+    <ClInclude Include="UiSurface.h" />
+    <ClInclude Include="UiSurfaceFactory.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\colorShading.frag" />

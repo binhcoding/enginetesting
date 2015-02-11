@@ -33,10 +33,10 @@ void Game::Init()
 {
 	GameEngine::Init();
 	_window.Create("Game Engine", _screenWidth, _screenHeight, 0);
-
 	InitShaders();
 	_spriteBatch.Init();
 	_fpsLimiter.Init(_maxFps);
+	_uiCore.Init(_screenWidth, _screenHeight);
 }
 
 void Game::InitShaders()
@@ -185,12 +185,12 @@ void Game::Draw()
 	color.g = 255;
 	color.b = 255;
 	color.a = 255;
+	_uiCore.Draw(_spriteBatch);
 	_spriteBatch.Draw(pos, uv, texture.id, 0.0f, color);
 	for (int i = 0; i < _bullets.size(); i++)
 	{
 		_bullets[i].Draw(_spriteBatch);
 	}
-
 	_spriteBatch.End();
 	_spriteBatch.RenderBatches();
 	glBindTexture(GL_TEXTURE_2D, 0);

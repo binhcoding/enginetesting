@@ -11,6 +11,7 @@
 #include <Game Engine/InputManager.h>
 #include <Game Engine/Timing.h>
 #include "Bullet.h"
+#include "UiCore.h"
 enum class GameState { PLAY, EXIT };
 
 
@@ -42,8 +43,11 @@ class Game
 		float _time;
 		float _maxFps;
 		float _fps;
+
+		UiCore _uiCore;
 		GameEngine::Camera2D _camera;
 		GameEngine::InputManager _inputManager;
 		GameEngine::FpsLimiter _fpsLimiter;
+		GameEngine::GLTexture _gameUi;
 };
 
