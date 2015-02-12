@@ -56,7 +56,7 @@ void Game::Update()
 		_fpsLimiter.Begin();
 		Input();
 		_time += 0.01f;
-
+		_uiCore.Update();
 		_camera.Update();
 		for (int i = 0; i < _bullets.size();)
 		{

@@ -14,6 +14,7 @@ class UiCore
 	~UiCore();
 	void Init(int width, int height);
 	void LoadMainUi(std::string path);
+	void Update();
 	void Draw(GameEngine::SpriteBatch& spriteBatch);
 	private:
 	Awesomium::WebCore* _webCore;
