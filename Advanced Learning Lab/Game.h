@@ -37,6 +37,9 @@ class Game
 		//std::vector<GameEngine::Sprite*> _sprites;
 		GameEngine::GLSLProgram _colorProgram;
 		GameEngine::SpriteBatch _spriteBatch;
+		GameEngine::SpriteBatch _uiBatch;
+		GameEngine::GLSLProgram _uiProgram;
+
 
 		std::vector<Bullet> _bullets;
 

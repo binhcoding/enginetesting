@@ -42,7 +42,7 @@ void UiCore::Draw(GameEngine::SpriteBatch& spriteBatch)
 		_mainUiSurface = (UiSurface*)surface;
 		if (_mainUiSurface)
 		{
-			glm::vec4 pos(0.0f, 0.0f, 1024.0f, 768.0f);
+			glm::vec4 pos(-512.0f, -384.0f, 1024.0f, 768.0f);
 			glm::vec4 uv(0.0f, 0.0f, 1.0f, 1.0f);
 			GameEngine::Color color;
 			color.r = 255;

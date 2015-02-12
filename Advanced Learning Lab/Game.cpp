@@ -35,6 +35,7 @@ void Game::Init()
 	_window.Create("Game Engine", _screenWidth, _screenHeight, 0);
 	InitShaders();
 	_spriteBatch.Init();
+	_uiBatch.Init();
 	_fpsLimiter.Init(_maxFps);
 	_uiCore.Init(_screenWidth, _screenHeight);
 }
@@ -46,6 +47,13 @@ void Game::InitShaders()
 	_colorProgram.AddAttributes("vertexColor");
 	_colorProgram.AddAttributes("vertexUV");
 	_colorProgram.LinkShaders();
+
+	
+	_uiProgram.CompileShaders("Shaders/colorShading.vert", "Shaders/colorShading.frag");
+	_uiProgram.AddAttributes("vertexPosition");
+	_uiProgram.AddAttributes("vertexColor");
+	_uiProgram.AddAttributes("vertexUV");
+	_uiProgram.LinkShaders();
 }
 
 void Game::Update()
@@ -163,20 +171,34 @@ void Game::Draw()
 
 	glClearDepth(1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	_colorProgram.Use();
+	_uiProgram.Use();
 	glActiveTexture(GL_TEXTURE0);
-	GLint textureLocation = _colorProgram.GetUniformLocation("mySampler");
-	glUniform1i(textureLocation, 0);
+	GLint uiTextureLocation = _uiProgram.GetUniformLocation("mySampler");
+	glUniform1i(uiTextureLocation, 0);
+	GLint uiProjectionLocation = _uiProgram.GetUniformLocation("P");
+	glm::mat4 uiCameraMatrix = _camera.GetCameraMatrixLocked();
+	glUniformMatrix4fv(uiProjectionLocation, 1, GL_FALSE, &(uiCameraMatrix[0][0]));
+	_uiBatch.Begin();
+	_uiCore.Draw(_uiBatch);
+	_uiBatch.End();
+	_uiBatch.RenderBatches();
+	_uiProgram.Unuse();
+
+
+
+	_colorProgram.Use();
+	glActiveTexture(GL_TEXTURE1);
+	GLint colorTextureLocation = _colorProgram.GetUniformLocation("mySampler");
+	glUniform1i(colorTextureLocation, 1);
 	/*GLint timeLocation = _colorProgram.GetUniformLocation("time");
 	glUniform1f(timeLocation, _time);*/
 	//_sprite.Draw();
 
 	GLint pLocation = _colorProgram.GetUniformLocation("P");
-	glm::mat4 cameraMatrix = _camera.GetCameraMatrix();
-
-	glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
-
+	glm::mat4 cameraMatrix;
 	_spriteBatch.Begin();
+	cameraMatrix = _camera.GetCameraMatrix();
+	glUniformMatrix4fv(pLocation, 1, GL_FALSE, &(cameraMatrix[0][0]));
 	glm::vec4 pos(0.0f, 0.0f, 50.0f, 50.0f);
 	glm::vec4 uv(0.0f, 0.0f, 1.0f, 1.0f);
 	static GameEngine::GLTexture texture = GameEngine::ResourceManager::GetTexture("Textures/JimmyJumpPack/PNG/CharacterRight_Standing.png");
@@ -185,7 +207,6 @@ void Game::Draw()
 	color.g = 255;
 	color.b = 255;
 	color.a = 255;
-	_uiCore.Draw(_spriteBatch);
 	_spriteBatch.Draw(pos, uv, texture.id, 0.0f, color);
 	for (int i = 0; i < _bullets.size(); i++)
 	{
@@ -193,7 +214,7 @@ void Game::Draw()
 	}
 	_spriteBatch.End();
 	_spriteBatch.RenderBatches();
-	glBindTexture(GL_TEXTURE_2D, 0);
 	_colorProgram.Unuse();
+	glBindTexture(GL_TEXTURE_2D, 0);
 	_window.Swap();
 }

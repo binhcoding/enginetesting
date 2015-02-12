@@ -30,6 +30,7 @@ namespace GameEngine
 		glm::vec2 GetPosition() { return _position; }
 		float GetScale() { return _scale; }
 		glm::mat4 GetCameraMatrix() { return _cameraMatrix; }
+		glm::mat4 GetCameraMatrixLocked();
 		private:
 		int _screenWidth, _screenHeight;
 		bool _needsMatrixUpdate;

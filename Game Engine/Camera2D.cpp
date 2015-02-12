@@ -51,4 +51,10 @@ namespace GameEngine
 		screenCoords += _position;
 		return screenCoords;
 	}
+
+	glm::mat4 Camera2D::GetCameraMatrixLocked()
+	{
+		glm::vec3 translate(_screenWidth / 2, _screenHeight / 2, 0.0f);
+		return glm::translate(_orthoMatrix, translate);
+	}
 }

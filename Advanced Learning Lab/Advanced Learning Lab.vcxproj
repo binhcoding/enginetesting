@@ -87,6 +87,7 @@
     <ClInclude Include="UiSurfaceFactory.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shaders\basicColor.vert" />
     <None Include="Shaders\colorShading.frag" />
     <None Include="Shaders\colorShading.vert" />
   </ItemGroup>
