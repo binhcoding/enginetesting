@@ -8,5 +8,5 @@ struct Tile
 	bool collidable;
 	glm::vec4 positionAndSize;
 	GameEngine::GLTexture texture;
-	GameEngine::Color color;
+	GameEngine::ColorRGBA8 color;
 };

@@ -25,7 +25,7 @@ Level::Level(const std::string& levelPath)
 		_levelData.push_back(firstLine);
 	}
 
-	GameEngine::Color color;
+	GameEngine::ColorRGBA8 color;
 	glm::vec4 uv(0.0f, 0.0f, 1.0f, 1.0f);
 
 	_spriteBatch.Init();

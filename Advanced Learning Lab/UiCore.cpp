@@ -20,7 +20,7 @@ void UiCore::Init(int width, int height)
 	_webCore->set_surface_factory(_uiSurfaceFactory.get());
 	_mainUi = _webCore->CreateWebView(1024, 768, nullptr, Awesomium::kWebViewType_Offscreen);
 	_mainUi->SetTransparent(true);
-	LoadMainUi("http://www.google.com");
+	LoadMainUi("https://www.youtube.com/watch?v=0-dRqGjMnsM");
 }
 
 void UiCore::LoadMainUi(std::string path)
@@ -44,7 +44,7 @@ void UiCore::Draw(GameEngine::SpriteBatch& spriteBatch)
 		{
 			glm::vec4 pos(-512.0f, -384.0f, 1024.0f, 768.0f);
 			glm::vec4 uv(0.0f, 0.0f, 1.0f, 1.0f);
-			GameEngine::Color color;
+			GameEngine::ColorRGBA8 color;
 			color.r = 255;
 			color.g = 255;
 			color.b = 255;

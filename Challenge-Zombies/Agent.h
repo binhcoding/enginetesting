@@ -29,7 +29,7 @@ class Agent
 		void CollideWithTile(glm::vec2 tilePos);
 
 		glm::vec2 _position;
-		GameEngine::Color _color;
+		GameEngine::ColorRGBA8 _color;
 		float _speed;
 		float _health;		
 };

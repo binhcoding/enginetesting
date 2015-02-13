@@ -287,32 +287,32 @@ void MainGame::ProcessInput()
 		}
 	}
 
-	if (_inputManager.IsKeyPressed(SDLK_w))
+	if (_inputManager.IsKeyDown(SDLK_w))
 	{
 		_camera.SetPosition(_camera.GetPosition() + glm::vec2(0.0f, CAMERA_SPEED));
 	}
 
-	if (_inputManager.IsKeyPressed(SDLK_s))
+	if (_inputManager.IsKeyDown(SDLK_s))
 	{
 		_camera.SetPosition(_camera.GetPosition() + glm::vec2(0.0f, -CAMERA_SPEED));
 	}
 
-	if (_inputManager.IsKeyPressed(SDLK_d))
+	if (_inputManager.IsKeyDown(SDLK_d))
 	{
 		_camera.SetPosition(_camera.GetPosition() + glm::vec2(CAMERA_SPEED, 0.0f));
 	}
 
-	if (_inputManager.IsKeyPressed(SDLK_a))
+	if (_inputManager.IsKeyDown(SDLK_a))
 	{
 		_camera.SetPosition(_camera.GetPosition() + glm::vec2(-CAMERA_SPEED, 0.0f));
 	}
 
-	if (_inputManager.IsKeyPressed(SDLK_q))
+	if (_inputManager.IsKeyDown(SDLK_q))
 	{
 		_camera.SetScale(_camera.GetScale() + SCALE_SPEED);
 	}
 
-	if (_inputManager.IsKeyPressed(SDLK_e))
+	if (_inputManager.IsKeyDown(SDLK_e))
 	{
 		_camera.SetScale(_camera.GetScale() - SCALE_SPEED);
 	}

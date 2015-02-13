@@ -21,7 +21,7 @@ void Bullet::Draw(GameEngine::SpriteBatch& spriteBatch)
 {
 	glm::vec4 uv(0.0f, 0.0f, 1.0f, 1.0f);
 	static GameEngine::GLTexture texture = GameEngine::ResourceManager::GetTexture("Textures/JimmyJumpPack/PNG/CharacterRight_Standing.png");
-	GameEngine::Color color;
+	GameEngine::ColorRGBA8 color;
 	color.r = 255;
 	color.g = 255;
 	color.b = 255;

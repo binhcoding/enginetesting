@@ -8,10 +8,11 @@ namespace GameEngine
 
 	}
 
-	void FpsLimiter::Init(float maxFps)
+	void FpsLimiter::Init(float maxFps, float desiredFps)
 	{
 		SetMaxFPS(maxFps);
-
+		SetDesiredFPS(desiredFps);
+		_previousTicks = SDL_GetTicks();
 	}
 
 	
@@ -65,4 +66,22 @@ namespace GameEngine
 		frameTimeAverage /= count;
 		_fps = (frameTimeAverage > 0) ? 1000.0f / frameTimeAverage : 60.0f;
 	}
+
+	void FpsLimiter::SetDesiredFPS(float desiredFps)
+	{
+		_desiredFps = desiredFps;
+	}
+
+	float FpsLimiter::DeltaTime()
+	{
+		return _deltaFrameTime;
+	}
+
+	void FpsLimiter::StopDelta()
+	{
+		float frameTime = _startTicks - _previousTicks;
+		_previousTicks = _startTicks;
+		_deltaFrameTime = frameTime / DESIRED_FRAMETIME;
+	}
+
 }

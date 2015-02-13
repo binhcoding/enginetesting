@@ -35,7 +35,7 @@ namespace GameEngine
 		void Init();
 		void Begin(GlyphSortType sortType = GlyphSortType::TEXTURE);
 		void End();
-		void Draw(const glm::vec4& destRect, const glm::vec4& uvRect, GLuint texture, float depth, const Color& color);
+		void Draw(const glm::vec4& destRect, const glm::vec4& uvRect, GLuint texture, float depth, const ColorRGBA8& color);
 		void RenderBatches();
 		private:
 		void CreateRenderBatches();

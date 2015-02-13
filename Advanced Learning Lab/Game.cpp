@@ -62,8 +62,25 @@ void Game::Update()
 	{
 		// used for frame time measuring
 		_fpsLimiter.Begin();
+		_inputManager.Update();
 		Input();
 		_time += 0.01f;
+
+		//int i = 0; // This counter makes sure we don't spiral to death!
+		//// Loop while we still have steps to process.
+		//while (totalDeltaTime > 0.0f && i < MAX_PHYSICS_STEPS)
+		//{
+		//	// The deltaTime should be the the smaller of the totalDeltaTime and MAX_DELTA_TIME
+		//	float deltaTime = std::min(totalDeltaTime, MAX_DELTA_TIME);
+		//	// Update all physics here and pass in deltaTime
+		//	updateAgents(deltaTime);
+		//	updateBullets(deltaTime);
+		//	// Since we just took a step that is length deltaTime, subtract from totalDeltaTime
+		//	totalDeltaTime -= deltaTime;
+		//	// Increment our frame counter so we can limit steps to MAX_PHYSICS_STEPS
+		//	i++;
+		//}
+
 		_uiCore.Update();
 		_camera.Update();
 		for (int i = 0; i < _bullets.size();)
@@ -124,32 +141,32 @@ void Game::Input()
 		}
 	}
 
-	if (_inputManager.IsKeyPressed(SDLK_w))
+	if (_inputManager.IsKeyDown(SDLK_w))
 	{
 		_camera.SetPosition(_camera.GetPosition() + glm::vec2(0.0f, CAMERA_SPEED));
 	}
 
-	if (_inputManager.IsKeyPressed(SDLK_s))
+	if (_inputManager.IsKeyDown(SDLK_s))
 	{
 		_camera.SetPosition(_camera.GetPosition() + glm::vec2(0.0f, -CAMERA_SPEED));
 	}
 
-	if (_inputManager.IsKeyPressed(SDLK_d))
+	if (_inputManager.IsKeyDown(SDLK_d))
 	{
 		_camera.SetPosition(_camera.GetPosition() + glm::vec2(CAMERA_SPEED, 0.0f));
 	}
 
-	if (_inputManager.IsKeyPressed(SDLK_a))
+	if (_inputManager.IsKeyDown(SDLK_a))
 	{
 		_camera.SetPosition(_camera.GetPosition() + glm::vec2(-CAMERA_SPEED, 0.0f));
 	}
 
-	if (_inputManager.IsKeyPressed(SDLK_q))
+	if (_inputManager.IsKeyDown(SDLK_q))
 	{
 		_camera.SetScale(_camera.GetScale() + SCALE_SPEED);
 	}
 
-	if (_inputManager.IsKeyPressed(SDLK_e))
+	if (_inputManager.IsKeyDown(SDLK_e))
 	{
 		_camera.SetScale(_camera.GetScale() - SCALE_SPEED);
 	}
@@ -202,7 +219,7 @@ void Game::Draw()
 	glm::vec4 pos(0.0f, 0.0f, 50.0f, 50.0f);
 	glm::vec4 uv(0.0f, 0.0f, 1.0f, 1.0f);
 	static GameEngine::GLTexture texture = GameEngine::ResourceManager::GetTexture("Textures/JimmyJumpPack/PNG/CharacterRight_Standing.png");
-	GameEngine::Color color;
+	GameEngine::ColorRGBA8 color;
 	color.r = 255;
 	color.g = 255;
 	color.b = 255;
