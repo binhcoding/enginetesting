@@ -4,6 +4,7 @@
 #include <Game Engine/Errors.h>
 #include <Game Engine/GameEngine.h>
 #include <Game Engine/ResourceManager.h>
+#include <Game Engine/Widget.h>
 
 //#include "ImageLoader.h"
 
@@ -32,12 +33,17 @@ void Game::Run()
 void Game::Init()
 {
 	GameEngine::Init();
+	_widgetCore.Init();
+	glm::uint16 test = GameEngine::GetRandomId();
+
 	_window.Create("Game Engine", _screenWidth, _screenHeight, 0);
 	InitShaders();
 	_spriteBatch.Init();
 	_uiBatch.Init();
-	_fpsLimiter.Init(_maxFps);
-	_uiCore.Init(_screenWidth, _screenHeight);
+	_fpsLimiter.Init(_maxFps, 60.0f);
+	//_uiCore.Init(_screenWidth, _screenHeight);
+	_mainUi.Init(_screenWidth, _screenHeight, "file://C:/Users/Maishoku/Documents/Repos/enginetesting/Advanced Learning Lab/page.html");
+	_mainUi.EnableMouseClick();
 }
 
 void Game::InitShaders()
@@ -65,6 +71,7 @@ void Game::Update()
 		_inputManager.Update();
 		Input();
 		_time += 0.01f;
+		_widgetCore.Update();
 
 		//int i = 0; // This counter makes sure we don't spiral to death!
 		//// Loop while we still have steps to process.
@@ -81,7 +88,7 @@ void Game::Update()
 		//	i++;
 		//}
 
-		_uiCore.Update();
+		
 		_camera.Update();
 		for (int i = 0; i < _bullets.size();)
 		{
@@ -141,6 +148,8 @@ void Game::Input()
 		}
 	}
 
+	_mainUi.Update(&sdlEvent);
+
 	if (_inputManager.IsKeyDown(SDLK_w))
 	{
 		_camera.SetPosition(_camera.GetPosition() + glm::vec2(0.0f, CAMERA_SPEED));
@@ -196,7 +205,7 @@ void Game::Draw()
 	glm::mat4 uiCameraMatrix = _camera.GetCameraMatrixLocked();
 	glUniformMatrix4fv(uiProjectionLocation, 1, GL_FALSE, &(uiCameraMatrix[0][0]));
 	_uiBatch.Begin();
-	_uiCore.Draw(_uiBatch);
+	_mainUi.Draw(_uiBatch);
 	_uiBatch.End();
 	_uiBatch.RenderBatches();
 	_uiProgram.Unuse();
@@ -227,6 +236,7 @@ void Game::Draw()
 	_spriteBatch.Draw(pos, uv, texture.id, 0.0f, color);
 	for (int i = 0; i < _bullets.size(); i++)
 	{
+		//if (_camera.IsInView())
 		_bullets[i].Draw(_spriteBatch);
 	}
 	_spriteBatch.End();

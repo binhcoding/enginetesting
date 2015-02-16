@@ -10,8 +10,10 @@
 #include <Game Engine/SpriteBatch.h>
 #include <Game Engine/InputManager.h>
 #include <Game Engine/Timing.h>
+#include <Game Engine/Widget.h>
 #include "Bullet.h"
 #include "UiCore.h"
+#include <Game Engine/WidgetCore.h>
 enum class GameState { PLAY, EXIT };
 
 
@@ -47,10 +49,12 @@ class Game
 		float _maxFps;
 		float _fps;
 
-		UiCore _uiCore;
+		//UiCore _uiCore;
+		GameEngine::Widget _mainUi;
 		GameEngine::Camera2D _camera;
 		GameEngine::InputManager _inputManager;
 		GameEngine::FpsLimiter _fpsLimiter;
 		GameEngine::GLTexture _gameUi;
+		GameEngine::WidgetCore _widgetCore;
 };
 

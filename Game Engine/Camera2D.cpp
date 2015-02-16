@@ -57,4 +57,30 @@ namespace GameEngine
 		glm::vec3 translate(_screenWidth / 2, _screenHeight / 2, 0.0f);
 		return glm::translate(_orthoMatrix, translate);
 	}
+
+	bool Camera2D::IsInView(const glm::vec2& position, const glm::vec2& dimensions)
+	{
+		glm::vec2 scaledScreenDimensions = glm::vec2(_screenWidth, _screenHeight) / _scale;
+
+		//axis aligned bounding box
+		// min distance before collision
+		const float MIN_DISTANCE_X = dimensions.x / 2.0f + scaledScreenDimensions.x / 2;
+		const float MIN_DISTANCE_Y = dimensions.y / 2.0f + scaledScreenDimensions.y / 2;
+
+		glm::vec2 centerPos = position;
+		glm::vec2 centerCameraPos = _position;
+		glm::vec2 distVec = centerPos - centerCameraPos;
+
+		// depth of collision
+		float xDepth = MIN_DISTANCE_X - abs(distVec.x);
+		float yDepth = MIN_DISTANCE_Y - abs(distVec.y);
+
+		if (xDepth > 0 && yDepth > 0)
+		{
+			  //collision
+			return true;
+		}
+		return false;
+	}
+
 }

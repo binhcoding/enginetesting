@@ -12,6 +12,8 @@ namespace GameEngine
 		void Init(int screenWidth, int screenHeight);
 		void Update();
 
+		bool IsInView(const glm::vec2& position, const glm::vec2& dimensions);
+
 		// setters
 		void SetPosition(glm::vec2& newPosition)
 		{
