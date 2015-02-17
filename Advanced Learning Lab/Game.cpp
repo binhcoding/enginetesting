@@ -8,7 +8,7 @@
 
 //#include "ImageLoader.h"
 
-Game::Game() : _screenWidth(1024), _screenHeight(760), _time(0), _gameState(GameState::PLAY), _maxFps(60.0f)
+Game::Game() : _screenWidth(1024), _screenHeight(768), _time(0), _gameState(GameState::PLAY), _maxFps(60.0f)
 {
 	_camera.Init(_screenWidth, _screenHeight);
 }
@@ -43,7 +43,7 @@ void Game::Init()
 	_fpsLimiter.Init(_maxFps, 60.0f);
 	//_uiCore.Init(_screenWidth, _screenHeight);
 	_mainUi.Init(_screenWidth, _screenHeight, "file://C:/Users/Maishoku/Documents/Repos/enginetesting/Advanced Learning Lab/page.html");
-	_mainUi.EnableMouseClick();
+	_mainUi.EnableMouseClick(true);
 }
 
 void Game::InitShaders()
