@@ -8,7 +8,7 @@
 
 //#include "ImageLoader.h"
 
-Game::Game() : _screenWidth(1024), _screenHeight(760), _time(0), _gameState(GameState::PLAY), _maxFps(60.0f)
+Game::Game() : _screenWidth(1024), _screenHeight(768), _time(0), _gameState(GameState::PLAY), _maxFps(60.0f)
 {
 	_camera.Init(_screenWidth, _screenHeight);
 }
